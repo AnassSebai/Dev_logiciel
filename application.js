@@ -1,13 +1,18 @@
+
 const fs = require('fs');
 let rawdata = fs.readFileSync('users.json');
 //on a recupéré les données du fichier et on les stocke dans users
 let users = JSON.parse(rawdata);
+const chalk = require('chalk'); 
 
 
 //Le Menu 
-console.log("---------------Menu---------------  \n");
-console.log(" -1- Afficher la liste des pays et le compteur ");
-console.log(" -2- Afficher la liste des sociétés et le compteur ");
+function showMenu(){
+    console.log(chalk.red('---------------Menu---------------  \n'));
+    console.log(chalk.yellow('-1- Afficher la liste des pays et le compteur '));
+    console.log(chalk.yellow('-2- Afficher la liste des sociétés et le compteur'));}
+
+
 
 
 
@@ -16,13 +21,20 @@ console.log(" -2- Afficher la liste des sociétés et le compteur ");
 
 function Afficher(res) {
   res.forEach(item => {
-    console.log(`${item.country || item.company}: ${item.count}`);
+    
+    console.log(chalk.green(`${item.country || item.company}: ${item.count}`));
   });
 }
 
+
+
 function main() {
+
+    //afficher le menu
+    showMenu();
+    //saisie de l'utulisateur
     const readlineSync = require('readline-sync');
-    const choix = readlineSync.question('(entre 1 pour pays et 2 pour societés)\n');
+    const choix = readlineSync.question(chalk.gray('(entre 1 pour pays et 2 pour societés)\n'));
   
     if (choix === '1') {
         //on met que les pays dans un tableau  country
@@ -30,7 +42,7 @@ function main() {
         for (let i = 0; i < users.length; i++) {
             country[i] = users[i].country;
         }
-        // on compte le nombre du tableau country  et on les met dans l'objet counts
+        // on compte le nombre d'occurence de chaque pays du tableau country  et on les met dans count
         const counts = {};
         for (const num of country) {
             counts[num] = counts[num] ? counts[num] + 1 : 1;
@@ -47,12 +59,12 @@ function main() {
         Afficher(res);
 
     } else if (choix === '2') {
-        //on met que les company dans company
+        //on met que les societés dans company
         let company = new Array(users.length);
         for (let i = 0; i < users.length; i++) {
             company[i] = users[i].company;
         }
-        // on compte les company et on les met dans l'objet counts
+        // on compte les  nobre d'occurence de chaque element de  company et on les met dans l'objet counts
         const counts = {};
         for (const num of company) {
             counts[num] = counts[num] ? counts[num] + 1 : 1;
@@ -69,7 +81,8 @@ function main() {
         Afficher(res);
 
     } else {
-      console.log('--------------Choix invalide--------------');
+        const chalk = require('chalk'); 
+        console.log(chalk.red('--------------Choix invalide--------------'));
     }
 }
 
