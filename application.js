@@ -10,7 +10,8 @@ const chalk = require('chalk');
 function showMenu(){
     console.log(chalk.red('---------------Menu---------------  \n'));
     console.log(chalk.yellow('-1- Afficher la liste des pays et le compteur '));
-    console.log(chalk.yellow('-2- Afficher la liste des sociétés et le compteur'));}
+    console.log(chalk.yellow('-2- Afficher la liste des sociétés et le compteur'));
+    console.log(chalk.yellow('-3- Ajouter un nouvel utilisateur'));}
 
 
 
@@ -25,6 +26,37 @@ function Afficher(res) {
     console.log(chalk.green(`${item.country || item.company}: ${item.count}`));
   });
 }
+// Importation du module readline-sync pour pouvoir lire les entrées utilisateur
+function ajouterUtilisateur() {
+    const readlineSync = require('readline-sync');
+
+    // Création d'un nouvel utilisateur avec des champs vides, sauf pour l'ID et la date de création
+    const newUser = {
+      id: readlineSync.question('ID: '),
+      email: '',
+      first: readlineSync.question('Prénom: '),
+      last: readlineSync.question('Nom: '),
+      company: readlineSync.question('Société: '),
+      created_at: new Date().toISOString(),
+      country: readlineSync.question('Pays: ')
+    };
+
+    // Demande de l'adresse email à l'utilisateur, avec une boucle pour s'assurer qu'elle est valide
+    let email;
+    do {
+      email = readlineSync.question('Email: ');
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        console.log(chalk.red('Adresse email invalide. Veuillez saisir une adresse email valide.'));
+        email = undefined;
+      }
+    } while (!email);
+
+    // Ajout de l'adresse email valide à l'utilisateur et sauvegarde dans le fichier users.json
+    newUser.email = email;
+    users.push(newUser);
+    fs.writeFileSync('users.json', JSON.stringify(users));
+    console.log('Utilisateur ajouté avec succès !');
+}
 
 
 
@@ -34,7 +66,7 @@ function main() {
     showMenu();
     //saisie de l'utulisateur
     const readlineSync = require('readline-sync');
-    const choix = readlineSync.question(chalk.gray('(entre 1 pour pays et 2 pour societés)\n'));
+    const choix = readlineSync.question(chalk.gray('(entre 1 pour pays , 2 pour societés,3 pour ajouter utilisateur utilisateur)\n'));
   
     if (choix === '1') {
         //on met que les pays dans un tableau  country
@@ -80,8 +112,10 @@ function main() {
         res.sort((a, b) => b.count - a.count);
         Afficher(res);
 
-    } else {
-        const chalk = require('chalk'); 
+    } else if (choix === '3') {
+        ajouterUtilisateur();
+    }else {
+         
         console.log(chalk.red('--------------Choix invalide--------------'));
     }
 }
