@@ -22,9 +22,9 @@ function Afficher(res) {
 
 function main() {
     const readlineSync = require('readline-sync');
-    const choice = readlineSync.question('(entre 1 pour pays et 2 pour societés)\n');
+    const choix = readlineSync.question('(entre 1 pour pays et 2 pour societés)\n');
   
-    if (choice === '1') {
+    if (choix === '1') {
         //on met que les pays dans un tableau  country
         let country = new Array(users.length);
         for (let i = 0; i < users.length; i++) {
@@ -46,7 +46,7 @@ function main() {
         res.sort((a, b) => b.count - a.count);
         Afficher(res);
 
-    } else if (choice === '2') {
+    } else if (choix === '2') {
         //on met que les company dans company
         let company = new Array(users.length);
         for (let i = 0; i < users.length; i++) {
