@@ -13,9 +13,9 @@
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://gitlab.com/DjoDeSavoie/developpementlogiciel/issues"
+    "url": "https://gitlab.com/DjoDeSavoie/developpementlogiciel.git/issues"
   },
-  "homepage": "https://gitlab.com/DjoDeSavoie/developpementlogiciel#readme",
+  "homepage": "https://gitlab.com/DjoDeSavoie/developpementlogiciel.git#readme",
   "dependencies": {
     "chalk": "^4.1.2",
     "express": "^4.18.2",
