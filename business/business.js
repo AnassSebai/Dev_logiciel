@@ -1,5 +1,6 @@
 const dal = require("../data/datalayer");
-// const _ = require("underscore"); //voir a quoi ca sert
+
+//const _ = require("underscore"); 
  
 const defaultNumber = 10;
 const defaultPage = 1;
@@ -11,7 +12,7 @@ const business = {
     },
 
     getCustomers : function(number, page) {
-        //checks param
+      
         if(number === undefined || page === undefined){
             number = defaultNumber;
             page = defaultPage;
@@ -27,12 +28,20 @@ const business = {
         resCustomers.numberByPage = number;
         resCustomers.totalPages = Math.ceil(resCustomers.total / number);
 
-        //return customers
+      
         return resCustomers;
+    },
+   
+    //ajouté un client à la base de données 
+    addCustomer: function(last, email, first, company, country) 
+    {
+        return dal.addCustomer(last, email, first, company, country);
     }
-
     
+
 
 };
 
 module.exports = business;
+
+

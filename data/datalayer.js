@@ -16,6 +16,7 @@ let datalayer = {
         return customers;
     },
 
+    //addCustomers=
     getCustomers: function (number, page) {
         {
 
@@ -30,7 +31,7 @@ let datalayer = {
 
             //filter by number and page
             if (number && page) {
-                customers = customers.slice((page - 1) * number, page)
+                customers = customers.slice((page - 1) * number, page*number);
             }
 
             const result = {
@@ -41,7 +42,32 @@ let datalayer = {
             return result;
 
         }
-    }
-};
+    },
+
+    addCustomer: function(last, email, first,company,country) {
+        // read existing customer data
+        const data = fs.readFileSync(filename);
+        const customers = JSON.parse(data);
+    
+        // create new customer object
+        const newCustomer = {
+            name: last,
+            email: email,
+            first: first,
+            country:country,
+            company:company
+        };
+    
+        // add new customer to array
+        customers.push(newCustomer);
+    
+        // save updated customer data to file
+        const customerContent = JSON.stringify(customers);
+        fs.writeFileSync(filename, customerContent);
+    
+        return newCustomer;
+    },
+    
+}
 
 module.exports = datalayer;
