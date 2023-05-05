@@ -1,14 +1,14 @@
-const apiServ = require("./presentation/apiPres");
+const apiServ = require('./presentation/apiPres');
+//const consolePres = require('./pres/consolePres');
 const port = 3001;
 
 function main(){
+  //pour lancer l'api 
+  apiServ.start(port);
 
-    //Starts api server
-    apiServ.start(port);
+  //pour lancer la pres console
+  //consolePres.start();
 
-    //start console ul
-    // apiServ.start();
 }
-
 
 main();

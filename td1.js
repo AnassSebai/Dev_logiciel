@@ -11,12 +11,9 @@ function showMenu(){
     console.log(chalk.red('---------------Menu---------------  \n'));
     console.log(chalk.yellow('-1- Afficher la liste des pays et le compteur '));
     console.log(chalk.yellow('-2- Afficher la liste des sociétés et le compteur'));
-    console.log(chalk.yellow('-3- Ajouter un nouvel utilisateur'));}
-
-
-
-
-
+    console.log(chalk.yellow('-3- Ajouter un nouvel utilisateur'));
+    console.log(chalk.yellow('-4- Supprimer un utilisateur'));
+    console.log(chalk.yellow('-5- modifier utilisateur'));}
 //Cette fonction prend un tableau en entrée et affiche le nombre d'occurrences 
 //pour chaque élément dans le tableau.
 
@@ -29,10 +26,15 @@ function Afficher(res) {
 // Importation du module readline-sync pour pouvoir lire les entrées utilisateur
 function ajouterUtilisateur() {
     const readlineSync = require('readline-sync');
-
-    // Création d'un nouvel utilisateur avec des champs vides, sauf pour l'ID et la date de création
+  
+    // Trouver l'id maximum et ajouter 1 pour obtenir le nouvel id
+    const newId = users.reduce((maxId, user) => {
+      return Math.max(maxId, user.id);
+    }, 0) + 1;
+  
+    // Création d'un nouvel utilisateur avec l'id nouvellement généré
     const newUser = {
-      id: readlineSync.question('ID: '),
+      id: newId,
       email: '',
       first: readlineSync.question('Prénom: '),
       last: readlineSync.question('Nom: '),
@@ -40,7 +42,7 @@ function ajouterUtilisateur() {
       created_at: new Date().toISOString(),
       country: readlineSync.question('Pays: ')
     };
-
+  
     // Demande de l'adresse email à l'utilisateur, avec une boucle pour s'assurer qu'elle est valide
     let email;
     do {
@@ -50,14 +52,50 @@ function ajouterUtilisateur() {
         email = undefined;
       }
     } while (!email);
-
+  
     // Ajout de l'adresse email valide à l'utilisateur et sauvegarde dans le fichier users.json
     newUser.email = email;
     users.push(newUser);
     fs.writeFileSync('users.json', JSON.stringify(users));
     console.log('Utilisateur ajouté avec succès !');
+  }
+  
+//Pour supprimer l'utilisateur 
+function supprimerUtilisateur() {
+    const readlineSync = require('readline-sync');
+    const id = parseInt(readlineSync.question('ID de l\'utilisateur à supprimer: '));
+    const index = users.findIndex(user => user.id === id);
+    if (index !== -1) {
+        users.splice(index, 1);
+        fs.writeFileSync('users.json', JSON.stringify(users));
+        console.log(`L'utilisateur avec l'ID ${id} a été supprimé avec succès.`);
+    } else {
+        console.log(`Aucun utilisateur trouvé avec l'ID ${id}.`);
+    }
 }
 
+
+//Pour modifier utilisateur 
+function modifierUtilisateur() {
+    const readlineSync = require('readline-sync');
+    const id = readlineSync.question('ID de l\'utilisateur à modifier: ');
+    const index = users.findIndex(user => user.id === id);
+    if (index !== -1) {
+        const user = users[index];
+        console.log(`Utilisateur trouvé avec l'ID ${id}:`);
+        console.log(user);
+        console.log('Veuillez entrer les nouvelles informations pour cet utilisateur:');
+        user.email = readlineSync.question(`Email (${user.email}): `) || user.email;
+        user.first = readlineSync.question(`Prénom (${user.first}): `) || user.first;
+        user.last = readlineSync.question(`Nom (${user.last}): `) || user.last;
+        user.company = readlineSync.question(`Société (${user.company}): `) || user.company;
+        user.country = readlineSync.question(`Pays (${user.country}): `) || user.country;
+        fs.writeFileSync('users.json', JSON.stringify(users));
+        console.log(`L'utilisateur avec l'ID ${id} a été modifié avec succès.`);
+    } else {
+        console.log(`Aucun utilisateur trouvé avec l'ID ${id}.`);
+    }
+}
 
 
 function main() {
@@ -114,6 +152,10 @@ function main() {
 
     } else if (choix === '3') {
         ajouterUtilisateur();
+    }else if (choix === '4') {
+        supprimerUtilisateur();
+    }else if (choix === '5') {
+        modifierUtilisateur();
     }else {
          
         console.log(chalk.red('--------------Choix invalide--------------'));

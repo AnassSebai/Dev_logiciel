@@ -1,47 +1,53 @@
-const dal = require("../data/datalayer");
+const data = require('../data/datalayer');
 
-//const _ = require("underscore"); 
- 
 const defaultNumber = 10;
 const defaultPage = 1;
-const maxNumber = 100;
+const maxNumber = 50;
 
 const business = {
-    getAllCustomers : function() {
-        return dal.getAllCustomers();
+    getAllClients : function(){
+        return data.getClients();
     },
 
-    getCustomers : function(number, page) {
-      
-        if(number === undefined || page === undefined){
-            number = defaultNumber;
+    getClients : function(number, page){
+        //initialise les pages si non fait
+        if(page == undefined ){ 
             page = defaultPage;
         }
-        if(number > maxNumber){
-            number = maxNumber;
+        if(number == undefined ){ 
+            number = defaultNumber;
         }
+        //etablit une val max a pas depasser
+        if(number > maxNumber)
+            number = maxNumber;
 
-        //recupérer données de la DAL
-        const resCustomers = dal.getCustomers(number, page);
+        //recupere l'objet crée par datalayer
+        const clients = data.getClients(number, page);
 
-        resCustomers.page = page;
-        resCustomers.numberByPage = number;
-        resCustomers.totalPages = Math.ceil(resCustomers.total / number);
+        //ajoute a l'objet d'autre infos
+        clients.page = page;
+        clients.number = number;
+        clients.totalPages = Math.ceil(clients.total / number); //si la division est decimale, renvoie nbr par exces 
 
-      
-        return resCustomers;
+        return clients;
     },
-   
+     
     //ajouté un client à la base de données 
-    addCustomer: function(last, email, first, company, country) 
-    {
-        return dal.addCustomer(last, email, first, company, country);
-    }
-    
+    addCustomer: function(newCustomer) {
+        return data.addCustomer(newCustomer);
+      },
+
+    //modifier client
+
+    //supprimer client
+    removeUser : function(user){
+        let nb = data.removeUser(user);
+        if(nb) return { success: true, message: "Utilisateur supprimé avec succès." };
+        else return { success: false, message: "ID d'utilisateur non trouvé." };
+    },
+
 
 
 };
 
 module.exports = business;
-
-

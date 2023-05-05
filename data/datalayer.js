@@ -1,73 +1,97 @@
-const fs = require("fs");
-// const proc = require("process");
+const file = "./data/customers.json";
+const fs = require('fs');
 
-// require("dotenv").config();
-const filename = "./data/customers.json";
+function getNextId() {
+    // lire les données clients existantes
+    const data = fs.readFileSync(file);
+    const customers = JSON.parse(data);
+  
+    // obtenir l'identifiant du dernier client
+    const lastCustomer = customers[customers.length - 1];
+    const lastId = lastCustomer ? parseInt(lastCustomer.id) : 0;
+  
+    // renvoie le prochain identifiant à utiliser
+    return lastId + 1;
+  }
 
-let datalayer = {
-    getAllCustomers: function () {
-        //read json file
-        const data = fs.readFileSync(filename);
-
+let data = {
+    //renvoie tous les clients du fichier customers.json
+    getAllClients : function(){
+        //get data from json file
+        const rawdata = fs.readFileSync(file);
         //parse to object
-        const customers = JSON.parse(data);
-
-        //return customers
-        return customers;
+        let clients = JSON.parse(rawdata);
+        //return object
+        return clients;
     },
 
-    //addCustomers=
-    getCustomers: function (number, page) {
-        {
+    //renvoie que les number clients de la page page
+    getClients : function(number, page){
+        //get data from json file
+        const rawdata = fs.readFileSync(file);
+        //parse to object
+        let clients = JSON.parse(rawdata);
 
+        const total = clients.length;
 
-            //read json file
-            let rawdata = fs.readFileSync(filename);
-
-            //parse to object
-            let customers = JSON.parse(rawdata);
-
-            const total = customers.length;
-
-            //filter by number and page
-            if (number && page) {
-                customers = customers.slice((page - 1) * number, page*number);
-            }
-
-            const result = {
-                total: total,
-                result: customers
-            };
-
-            return result;
-
+        //si les param sont definis, on decoupe notre tab de clients a partir de facon a afficher
+        //le number d'elts entre la page -1 et la page
+        if(number && page){
+            clients = clients.slice((page - 1)*number, page*number);
         }
-    },
 
-    addCustomer: function(last, email, first,company,country) {
-        // read existing customer data
-        const data = fs.readFileSync(filename);
-        const customers = JSON.parse(data);
-    
-        // create new customer object
-        const newCustomer = {
-            name: last,
-            email: email,
-            first: first,
-            country:country,
-            company:company
+        clients = {
+            total : total,
+            clients : clients
         };
-    
-        // add new customer to array
-        customers.push(newCustomer);
-    
-        // save updated customer data to file
-        const customerContent = JSON.stringify(customers);
-        fs.writeFileSync(filename, customerContent);
-    
-        return newCustomer;
-    },
-    
-}
 
-module.exports = datalayer;
+        //return object
+        return clients;
+    },
+
+         
+    addCustomer: function (newCustomer) {
+    // lire les données clients existantes
+    const customersData = fs.readFileSync(file);
+    const customers = JSON.parse(customersData);
+  
+    // creer le nouveau objet du nv client
+    const customer = {
+        id: getNextId(),//id suivant
+        email: newCustomer.email,
+        first: newCustomer.first,
+        last: newCustomer.last,
+        company: newCustomer.company,
+        created_at: new Date().toISOString(),//date du moment d'ajout
+        country: newCustomer.country, 
+    };
+  
+    // ajouter le nouveau client dans le tableau des clients
+    customers.push(customer);
+  
+    // sauvegarder les données clients mises à jour dans le fichier
+    const customerContent = JSON.stringify(customers, null, 2).replace(/}\n\s*\{/g, "},\n  {");
+    fs.writeFileSync(file, customerContent);
+  
+    return customer;
+  },
+  //retire l'user en fonction de son id
+  removeUser : function(removeuser){
+    //get data from json file
+    const rawdata = fs.readFileSync(file);
+    //parse to object
+    let newclients = JSON.parse(rawdata);
+    //findIndex permet de retrouver un user en fonction du param removeuser
+    const id = newclients.findIndex(user => user.id === parseInt(removeuser));
+    if (id != -1) {
+        //puis de le retirer s'il existe 
+        newclients.splice(id, 1);
+        //et de reecrire le fichier
+        fs.writeFileSync(file, JSON.stringify(newclients, null, 2));
+        return 1;
+    } else 
+      return 0;        
+  },
+};  
+
+module.exports = data;
