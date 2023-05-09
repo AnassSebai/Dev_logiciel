@@ -19,7 +19,9 @@ Le back-end de l'application se compose de trois fichiers principaux :
 # Installation 
 Pour installer les dépendances, exécutez la commande suivante :
 npm install "..."
-
+!!!!!!!!!!!!!!!!!!!
+n'oubliez pas d'installer underscore avant de lancer 
+npm install underscore
 
 # Utilisation 
 Pour lancer l'application, exécutez la commande suivante :
