@@ -1,53 +1,55 @@
-const data = require('../data/datalayer');
+const data = require("../data/dataLayer"); // Importe le module dataLayer
+const _ = require("underscore"); // Importe le module Underscore
 
-const defaultNumber = 10;
-const defaultPage = 1;
-const maxNumber = 50;
+const defaultNumber = 10; // Nombre de clients à retourner par défaut
+const defaultPage = 1; // Page à retourner par défaut
+const maxNumber = 50; // Nombre maximum de clients à retourner
 
 const business = {
-    getAllClients : function(){
-        return data.getClients();
+    // Récupère tous les clients
+    getAllCustomers : function() {
+        return data.getAllCustomers();
     },
 
-    getClients : function(number, page){
-        //initialise les pages si non fait
-        if(page == undefined ){ 
+    // Récupère les clients en fonction du nombre et de la page spécifiés
+    getCustomers : function(number, page) {
+
+        // Si le nombre ou la page n'est pas spécifié, utilise les valeurs par défaut
+        if(number == undefined || page == undefined){
+            number = defaultNumber;
             page = defaultPage;
         }
-        if(number == undefined ){ 
-            number = defaultNumber;
-        }
-        //etablit une val max a pas depasser
+
+        // Si le nombre est supérieur au maximum, utilise le maximum
         if(number > maxNumber)
             number = maxNumber;
 
-        //recupere l'objet crée par datalayer
-        const clients = data.getClients(number, page);
+        // Récupère les clients correspondants aux critères
+        const resCustomers = data.getCustomers(number, page);
+        
+        // Ajoute des propriétés pour faciliter la pagination
+        resCustomers.page = page;
+        resCustomers.numberByPage = number;
+        resCustomers.totalPages = Math.ceil(resCustomers.total /number);
 
-        //ajoute a l'objet d'autre infos
-        clients.page = page;
-        clients.number = number;
-        clients.totalPages = Math.ceil(clients.total / number); //si la division est decimale, renvoie nbr par exces 
-
-        return clients;
-    },
-     
-    //ajouté un client à la base de données 
-    addCustomer: function(newCustomer) {
-        return data.addCustomer(newCustomer);
-      },
-
-    //modifier client
-
-    //supprimer client
-    removeUser : function(user){
-        let nb = data.removeUser(user);
-        if(nb) return { success: true, message: "Utilisateur supprimé avec succès." };
-        else return { success: false, message: "ID d'utilisateur non trouvé." };
+        return resCustomers;
     },
 
+    // Ajoute un nouveau client
+    ajouter : function(customer){
+        return data.ajouter(customer);;
+    },
 
+    // Modifie un client existant
+    modifier : function(customer){
+        return data.modifier(customer);
+    },
 
-};
+    // Supprime un client existant
+    supprimer : function(customer){
+        return data.supprimer(customer);
+    },
 
-module.exports = business;
+}
+
+module.exports = business; // Exporte le module business

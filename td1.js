@@ -1,6 +1,6 @@
 
 const fs = require('fs');
-let rawdata = fs.readFileSync('users.json');
+let rawdata = fs.readFileSync('customers.json');
 //on a recupéré les données du fichier et on les stocke dans users
 let users = JSON.parse(rawdata);
 const chalk = require('chalk'); 
